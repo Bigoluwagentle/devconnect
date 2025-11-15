@@ -3,11 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { auth, db } from "../lib/firebase";
-import { supabase } from "../lib/supabase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   updateProfile,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 
@@ -21,7 +23,6 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null);
 
   const handleCreateAccount = async (e: React.FormEvent) => {
-
     e.preventDefault();
     setError(null);
 
@@ -37,40 +38,34 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      
       // 1️⃣ Check if username is unique
       const usersRef = collection(db, "users");
       const usernameQuery = query(usersRef, where("username", "==", username));
       const usernameSnapshot = await getDocs(usernameQuery);
+
       if (!username.trim() || !email.trim()) {
         setError("Username and email cannot be empty.");
         setLoading(false);
         return;
       }
-      console.log("📌 CHECKING USERNAME...");
 
       if (!usernameSnapshot.empty) {
         setError("Username already taken. Choose another one.");
         setLoading(false);
         return;
       }
+
       // 2️⃣ Create user with email & password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-
-
-      // 3️⃣ Wait a bit to ensure Firestore sees the signed-in user
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log("USER UID:", user.uid);
-
-      // 4️⃣ Set displayName
+      // 3️⃣ Set displayName
       await updateProfile(user, { displayName: username });
 
-      // 5️⃣ Send email verification
+      // 4️⃣ Send email verification
       await sendEmailVerification(user);
 
-      // 6️⃣ Create Firestore user document
+      // 5️⃣ Create Firestore user document
       await setDoc(doc(db, "users", user.uid), {
         name,
         username,
@@ -78,7 +73,7 @@ export default function Signup() {
         createdAt: new Date(),
       });
 
-      // 7️⃣ Redirect to verification page
+      // 6️⃣ Redirect to verification page
       window.location.href = "/verify-email";
     } catch (err: any) {
       if (err.code === "auth/email-already-in-use") {
@@ -90,18 +85,35 @@ export default function Signup() {
       setLoading(false);
     }
   };
-  const handleOAuth = async (provider: "google" | "github") => {
-      try {
-        await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/chat`,
-          },
+
+  // Optional: Firebase OAuth (Google/GitHub)
+  const handleOAuth = async (providerName: "google" | "github") => {
+    try {
+      let provider;
+      if (providerName === "google") provider = new GoogleAuthProvider();
+      else provider = new GithubAuthProvider();
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Create Firestore user doc if not exists
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDocs(query(collection(db, "users"), where("username", "==", user.displayName || "")));
+      if (userSnap.empty) {
+        await setDoc(userRef, {
+          name: user.displayName || "Anonymous",
+          username: user.displayName || `user${user.uid.slice(0, 5)}`,
+          email: user.email,
+          createdAt: new Date(),
         });
-      } catch (e: any) {
-        alert("Failed")
       }
-    };
+
+      window.location.href = "/chat";
+    } catch (err) {
+      alert("OAuth login failed.");
+      console.error(err);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center pt-10 bg-black w-full min-h-screen px-4">
@@ -193,7 +205,7 @@ export default function Signup() {
 
         <button
           onClick={() => handleOAuth("github")}
-          className="w-full bg-black border border-gray-600 text-white h-12 rounded-lg mb-3 text-sm"
+          className="w-full hidden bg-black border border-gray-600 text-white h-12 rounded-lg mb-3 text-sm"
         >
           Continue with GitHub
         </button>
@@ -204,7 +216,8 @@ export default function Signup() {
         >
           Continue with Google
         </button>
-        <p className="text-gray-400 text-sm text-center max-w-xs">
+
+        <p className="text-gray-400 text-sm text-center max-w-xs mt-4">
           After clicking the verification link in your email, come back to log in.
         </p>
       </section>

@@ -10,6 +10,7 @@ import {
   GithubAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -121,9 +122,11 @@ export default function Login() {
           Continue with Google
         </button>
 
+        <Link href="/register" className="text-gray-500">Doesn't have an account <Link className="font-bold text-white" href="/register">Sign Up</Link></Link>
+
         <button
           onClick={() => handleOAuth("github")}
-          className="w-full bg-black border border-gray-600 text-white h-12 rounded-lg text-sm"
+          className="w-full hidden bg-black border border-gray-600 text-white h-12 rounded-lg text-sm"
         >
           Continue with GitHub
         </button>
