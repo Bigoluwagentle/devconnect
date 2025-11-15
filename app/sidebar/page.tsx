@@ -223,14 +223,10 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     setMobileOpen(false);
   };
 
-  // ---------------------------------------------------------
-  // RESPONSIVE SIDEBAR UI
-  // ---------------------------------------------------------
   return (
     <>
-      {/* Mobile top bar */}
-      <div className="md:hidden flex items-center justify-between bg-[#1E2128] p-4 text-white">
-        <h1 className="text-xl font-semibold">DevConnect</h1>
+      <div className="md:hidden bg-[#1E2128] p-2 text-white">
+        {/* <h1 className="text-xl font-semibold">DevConnect</h1> */}
         <Menu
           className="w-7 h-7"
           onClick={() => setMobileOpen(true)}
@@ -380,7 +376,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
         </div>
       </aside>
 
-      {/* Mobile backdrop */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-30 md:hidden"

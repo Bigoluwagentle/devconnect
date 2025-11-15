@@ -160,17 +160,13 @@ const ChatPage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
       <SideBar setChannel={setChannel} activeChannel={channel} />
 
-      {/* Chat area */}
       <main className="flex-1 flex flex-col md:ml-[20%] bg-[#0E0F12]">
-        {/* Header */}
         <header className="h-16 border-b border-[#2A2D35] flex items-center px-4 md:px-6">
           <h2 className="text-white text-xl font-semibold">{currentChannelName}</h2>
         </header>
 
-        {/* Messages */}
         <section className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 bg-[#121418] scrollbar-hide">
           {messages.length === 0 && (
             <p className="text-gray-500 text-center mt-10">No messages yet</p>
@@ -194,7 +190,6 @@ const ChatPage = () => {
           <div ref={messagesEndRef} />
         </section>
 
-        {/* Input */}
         <footer className="h-20 border-t border-[#2A2D35] px-4 md:px-6 flex items-center">
           <input
             type="text"
