@@ -1,8 +1,7 @@
-// lib/firebase.ts
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getStorage } from "firebase/storage"; // ✅ Import storage
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,10 +12,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only once
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
-export const storage = getStorage(app); // ✅ Initialize storage
+export const storage = getStorage(app);
