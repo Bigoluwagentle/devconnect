@@ -122,7 +122,7 @@ export default function Login() {
           Continue with Google
         </button>
 
-        <Link href="/register" className="text-gray-500">Doesn't have an account <Link className="font-bold text-white" href="/register">Sign Up</Link></Link>
+        <Link href="/register" className="text-gray-500">Doesn't have an account <b className="text-white">Sign Up</b></Link>
 
         <button
           onClick={() => handleOAuth("github")}
