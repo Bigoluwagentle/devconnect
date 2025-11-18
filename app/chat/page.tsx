@@ -38,7 +38,6 @@ const ChatPage = () => {
   const [currentUser, setCurrentUser] = useState(auth.currentUser);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Track auth state and ensure user + general community exist
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
@@ -79,7 +78,6 @@ const ChatPage = () => {
     return () => unsubscribe();
   }, []);
 
-  // Load messages for active channel
   useEffect(() => {
     if (!currentUser || !channel) return;
 
@@ -109,12 +107,10 @@ const ChatPage = () => {
     return () => unsubscribe();
   }, [channel, currentUser]);
 
-  // Scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Load current channel name dynamically
   useEffect(() => {
     if (!channel) return;
 
@@ -139,7 +135,6 @@ const ChatPage = () => {
     fetchChannelName();
   }, [channel, currentUser]);
 
-  // Send message
   const handleSend = async () => {
     if (!input.trim() || !currentUser || !channel) return;
 

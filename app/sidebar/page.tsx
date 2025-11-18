@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 
 interface SideBarProps {
   setChannel: (channelId: string) => void;
@@ -356,16 +357,13 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
           >
             Profile
           </button>
-
+          <Link href="/">
           <button
-            onClick={async () => {
-              await auth.signOut();
-              router.refresh();
-            }}
             className="block w-full px-4 py-2 hover:bg-gray-700 rounded"
           >
             Logout
           </button>
+          </Link>
         </div>
       </aside>
 
