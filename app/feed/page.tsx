@@ -331,12 +331,12 @@ export default function CommunityFeedPage() {
                         </a>
                       )}
 
-                      <div className="flex items-center gap-3 mt-4">
+                      <div className="flex items-center flex-wrap gap-3 mt-4">
                         <button
                           onClick={() => (currentUser ? toggleLike(p.id!, !!liked) : router.push("/login"))}
                           className={`flex items-center gap-2 px-3 py-1 rounded ${liked ? "bg-[#1E90FF] text-black" : "bg-[#323743]"}`}
                         >
-                          <Heart className="w-4 h-4" />
+                          <Heart className="w-3 md:w-4 md:h-4" />
                           <span className="text-sm">{liked ? "Liked" : "Like"}</span>
                           <span className="text-xs text-gray-200"> {p.likes?.length ? `(${p.likes.length})` : ""}</span>
                         </button>
@@ -344,14 +344,14 @@ export default function CommunityFeedPage() {
                           onClick={() => (currentUser ? openComments(p.id!) : router.push("/login"))}
                           className="flex items-center gap-2 px-3 py-1 rounded bg-[#323743]"
                         >
-                          <MessageCircle className="w-4 h-4" />
+                          <MessageCircle className="w-3 md:w-4 md:h-4" />
                           <span className="text-sm">Comments</span>
                           <span className="text-xs text-gray-200">
                             {(postComments[p.id!]?.length) ? `(${postComments[p.id!].length})` : ""}
                           </span>
                         </button>
                         <button className="flex items-center gap-2 px-3 py-1 rounded bg-[#323743]">
-                          <Share2 className="w-4 h-4" />
+                          <Share2 className="w-3 md:w-4 md:h-4" />
                           <span className="text-sm">Share</span>
                         </button>
                       </div>

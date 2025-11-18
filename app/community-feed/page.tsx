@@ -35,7 +35,6 @@ type Article = {
   content?: string;
 };
 
-// 🔥 FIX: Make id required so p.id is never undefined
 type Post = {
   id: string;
   title?: string;
