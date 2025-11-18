@@ -19,7 +19,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // Normal login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
@@ -37,7 +36,7 @@ export default function Login() {
         return;
       }
 
-      router.push("/chat");
+      router.push("/community-feed");
     } catch (error: any) {
       setErr(error.message || "Login failed");
     } finally {
@@ -74,7 +73,7 @@ export default function Login() {
         });
       }
 
-      router.push("/chat");
+      router.push("/community-feed");
     } catch (e: any) {
       setErr(e.message || "OAuth login failed");
       console.error(e);

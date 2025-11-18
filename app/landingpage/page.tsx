@@ -19,7 +19,7 @@ export default function Landingpage() {
         </Link>
 
         <nav className="flex items-center gap-6">
-          <Link href="/register" className="text-white hover:text-[#1E90FF] transition">
+          <Link href="/feed" className="text-white hover:text-[#1E90FF] transition">
             Join Community
           </Link>
           <Link href="/login" className="text-white hover:text-[#1E90FF] transition">
@@ -39,7 +39,7 @@ export default function Landingpage() {
         </p>
 
         <div className="flex justify-center items-center gap-5 mt-10">
-          <Link href="/register">
+          <Link href="/feed">
             <button className="bg-[#1E90FF] px-8 py-3 rounded-full font-medium hover:opacity-80 transition">
               Join Community
             </button>
@@ -69,7 +69,7 @@ export default function Landingpage() {
               <h4 className="mt-4 text-2xl font-bold">{item.title}</h4>
               <p className="text-gray-400 mt-2">{item.text}</p>
 
-              <Link href="/register">
+              <Link href="/feed">
                 <button className="mt-5 bg-black w-full py-2 rounded-lg text-[#1E90FF] hover:bg-gray-900 transition">
                     View Project
                   </button>
@@ -131,7 +131,7 @@ export default function Landingpage() {
           Join DevConnect today and start connecting, collaborating, and showcasing your work.
         </p>
 
-        <Link href="/register">
+        <Link href="/feed">
         <button className="bg-[#1E90FF] px-10 py-3 rounded-full mt-10 hover:opacity-80 transition">
           Join DevConnect Now
         </button>

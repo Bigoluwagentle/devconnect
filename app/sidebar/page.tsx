@@ -58,13 +58,9 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
   const [unreadCounts, setUnreadCounts] = useState<{ [channelId: string]: number }>({});
   const [newCommunityName, setNewCommunityName] = useState("");
   const [inviteUsername, setInviteUsername] = useState("");
-  // const [dmUsername, setDmUsername] = useState("");
   const [dmUsername, setDmUsername] = useState<string>("");
 
 
-  // --------------------------------------------------------------
-  // AUTH CHECK + CREATE USER DOC IF DOESN'T EXIST
-  // --------------------------------------------------------------
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) return;
@@ -74,7 +70,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
 
-      // Auto-create missing username for OAuth users
       const generatedUsername =
         user.displayName?.replace(/\s+/g, "").toLowerCase() ||
         user.email?.split("@")[0] ||
@@ -91,7 +86,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
         });
       }
 
-      // Ensure GENERAL community exists
       const generalRef = doc(db, "communities", DEFAULT_COMMUNITY_ID);
       const generalSnap = await getDoc(generalRef);
 
@@ -115,9 +109,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     return () => unsubscribe();
   }, [activeChannel, setChannel]);
 
-  // --------------------------------------------------------------
-  // LOAD COMMUNITIES
-  // --------------------------------------------------------------
   useEffect(() => {
     if (!currentUser) return;
 
@@ -140,9 +131,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     return () => unsubscribe();
   }, [currentUser]);
 
-  // --------------------------------------------------------------
-  // LOAD ALL USERS (needed for usernames & DM list)
-  // --------------------------------------------------------------
   useEffect(() => {
     const fetchUsers = async () => {
       const snap = await getDocs(collection(db, "users"));
@@ -153,9 +141,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     fetchUsers();
   }, []);
 
-  // --------------------------------------------------------------
-  // DIRECT MESSAGES
-  // --------------------------------------------------------------
   useEffect(() => {
     if (!currentUser) return;
 
@@ -171,9 +156,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     return () => unsub();
   }, [currentUser]);
 
-  // --------------------------------------------------------------
-  // START DM
-  // --------------------------------------------------------------
   const handleStartDM = async () => {
   if (!currentUser || !dmUsername.trim()) return;
 
@@ -198,7 +180,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     if (members.includes(otherUserId)) dmId = d.id;
   });
 
-  // Create new DM if not found
   if (!dmId) {
     const docRef = await addDoc(dmRef, {
       members: [currentUser.uid, otherUserId],
@@ -207,15 +188,12 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     dmId = docRef.id;
   }
 
-  setChannel(dmId);   // ✓ Type-safe
-  setDmUsername("");  // ✓ Resolved
+  setChannel(dmId);   
+  setDmUsername("");
   setMobileOpen(false);
 };
 
 
-  // --------------------------------------------------------------
-  // CREATE COMMUNITY
-  // --------------------------------------------------------------
   const createCommunity = async () => {
     if (!currentUser || !newCommunityName.trim()) return;
 
@@ -238,9 +216,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     setMobileOpen(false);
   };
 
-  // --------------------------------------------------------------
-  // ADD USER TO COMMUNITY
-  // --------------------------------------------------------------
   const handleInviteUser = async (communityId: string) => {
     if (!inviteUsername.trim()) return alert("Enter a username!");
 
@@ -257,9 +232,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
     setInviteUsername("");
   };
 
-  // --------------------------------------------------------------
-  // CLICK CHANNEL
-  // --------------------------------------------------------------
   const handleChannelClick = (id: string) => {
     setChannel(id);
     setUnreadCounts((prev) => ({ ...prev, [id]: 0 }));
@@ -268,12 +240,10 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
 
   return (
     <>
-      {/* TOP MOBILE MENU BUTTON */}
       <div className="md:hidden bg-[#1E2128] p-2 text-white">
         <Menu className="w-7 h-7" onClick={() => setMobileOpen(true)} />
       </div>
 
-      {/* SIDEBAR */}
       <aside
         className={`fixed top-0 left-0 h-screen bg-[#1E2128] text-white z-40
           overflow-y-auto transition-all duration-300
@@ -281,7 +251,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
           ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        {/* MOBILE CLOSE BUTTON */}
         <div className="md:hidden flex justify-end p-4">
           <X className="w-7 h-7" onClick={() => setMobileOpen(false)} />
         </div>
@@ -289,7 +258,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
         <div className="px-4">
           <h1 className="font-bold text-xl mb-4">DevConnect</h1>
 
-          {/* COMMUNITIES */}
           <p className="text-gray-400 mb-2">Your Communities</p>
 
           {communities.map((c) => (
@@ -301,7 +269,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
                 #{c.name}
               </button>
 
-              {/* LIST MEMBERS */}
               <div className="ml-4 text-gray-300">
                 <p className="text-gray-400 text-sm">Members:</p>
                 {c.members.map((uid) => (
@@ -311,7 +278,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
                 ))}
               </div>
 
-              {/* INVITE USER */}
               <div className="flex gap-2 mt-2">
                 <input
                   type="text"
@@ -330,7 +296,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
             </div>
           ))}
 
-          {/* CREATE COMMUNITY */}
           <div className="flex gap-2 mt-4">
             <input
               type="text"
@@ -344,7 +309,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
             </button>
           </div>
 
-          {/* DIRECT MESSAGES */}
           <p className="text-gray-400 mt-6 mb-2">Direct Messages</p>
 
           {directMessages.map((dm) => {
@@ -368,7 +332,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
             );
           })}
 
-          {/* START NEW DM */}
           <div className="flex gap-2 mt-3">
             <input
               type="text"
@@ -383,7 +346,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
           </div>
         </div>
 
-        {/* PROFILE + LOGOUT */}
         <div className="mt-6 px-4 mb-6">
           <button
             onClick={() => {
@@ -407,7 +369,6 @@ const SideBar = ({ setChannel, activeChannel }: SideBarProps) => {
         </div>
       </aside>
 
-      {/* MOBILE OUTSIDE OVERLAY */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-30 md:hidden"
